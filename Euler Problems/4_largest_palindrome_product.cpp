@@ -1,5 +1,5 @@
 /**
- * @file 4_largest_palindrome_product.cpp
+ * @file 4_largestPalindromeProduct.cpp
  * @author Steven Aquino
  * @brief A palindromic number reads the same both ways. The largest palindrome
  * made from the product of two 2-digit numbers is 9009 = 91 × 99.
@@ -15,60 +15,57 @@
 #include <string>
 
 /**
- * @brief Checks if the number is a palindrome. NOTE: Not to be used for double!
+ * @brief Checks if the number is a palindrome. NOTE: Not to be used for
+ * fractionals!
  * @param num Any integer number to check.
- * @return True if the number forwards is the same backwards.
+ * @return True if the number is a palindrome.
  */
-bool is_palindrome(long long num)
-{
-    std::string original = std::to_string(num); // string to use reverse().
-
-    std::string temp = original;
-    std::reverse(temp.begin(), temp.end());
-    std::string reversed = temp;
-
+bool isPalindrome(long long num) {
+    std::string original = std::to_string(num);
+    std::string reversed = original;
+    std::reverse(reversed.begin(), reversed.end());
     return (original == reversed);
 }
 
 /**
  * @brief Finds the largest palindrome product based on the number of
  * digits. Ex. 2 -> 10-99, 3 -> 100-999
- * @param num_of_digits The number of digits.
+ * @param digits The number of digits.
  * @return Largest palindrome product.
  */
-long long largest_palindrome_product(int num_of_digits)
-{
-    long long largest_palindrome = 0;
+long long largestPalindromeProduct(int digits) {
+    long long largestPalindrome = 0;
 
     // Using the power of 10 to define the range.
-    long long digits = pow(10, num_of_digits - 1);
-    long long start = 9 * digits;
-    long long end = 10 * digits;
+    double rangeDefinition = pow(10, digits - 1);
+    long long start = 1 * rangeDefinition;
+    long long end = 10 * rangeDefinition;
+    std::cout << "Range Defined: " << start << " - " << end << "\n";
 
     // Finding the largest palindrome.
-    for (int i = start; i < end; i++) {
-        for (int j = start; j < end; j++) {
+    for (int i = end; i > start; i--) {
+        for (int j = end; j > start; j--) {
             long long product = i * j;
 
-            if (is_palindrome(product)) {
-                largest_palindrome = std::max(product, largest_palindrome);
+            if (product > largestPalindrome) {
+                largestPalindrome =
+                    (isPalindrome(product)) ? product : largestPalindrome;
             }
         }
     }
 
-    return largest_palindrome;
+    return largestPalindrome;
 }
 
 /**
  * @brief Controls the main operation of the program.
  */
-int main()
-{
+int main() {
     std::cout << "Largest palindrome product of 2-digit numbers: "
-              << largest_palindrome_product(2) << '\n';
+              << largestPalindromeProduct(2) << '\n';
 
     std::cout << "Largest palindrome product of 3-digit numbers: "
-              << largest_palindrome_product(3) << '\n';
+              << largestPalindromeProduct(3) << '\n';
 
     return 0;
 }
