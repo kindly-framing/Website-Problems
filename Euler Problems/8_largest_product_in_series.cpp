@@ -38,8 +38,7 @@ const std::string THOUSAND_DIGIT_NUM =
  * @param num An integer number.
  * @return The multiplication of the individual digits.
  */
-long long multiply_digits(std::string num)
-{
+long long multiply_digits(std::string num) {
     if (num.empty()) {
         return 0; // No digits to multiply!
     }
@@ -58,8 +57,7 @@ long long multiply_digits(std::string num)
  * @param adjacent The amount of adjacent digits.
  * @return The greatest product.
  */
-long long greatest_adjacent_product(int adjacent)
-{
+long long greatest_adjacent_product(int adjacent) {
     std::string greatest_substr;
     long long greatest_product = 0;
 
@@ -82,8 +80,7 @@ long long greatest_adjacent_product(int adjacent)
 /**
  * @brief Controls the main operation of the program.
  */
-int main()
-{
+int main() {
     std::cout << greatest_adjacent_product(4) << "\n";
     std::cout << greatest_adjacent_product(13) << "\n";
     return 0;

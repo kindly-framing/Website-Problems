@@ -19,8 +19,7 @@
  * @param end Range end point.
  * @return The lowest common multiple between the user-defined range.
  */
-long long lowest_common_multiple_in_range(long long start, long long end)
-{
+long long lowest_common_multiple_in_range(long long start, long long end) {
     long long lcm = 1; // Lowest Common Multiple.
 
     // Using the formula LCM = (a * b) / GCF(a, b) for each number in the range.
@@ -34,8 +33,7 @@ long long lowest_common_multiple_in_range(long long start, long long end)
 /**
  * @brief Controls the main operation of the program.
  */
-int main()
-{
+int main() {
     std::cout << "LCM between 1 and 10 is: "
               << lowest_common_multiple_in_range(1, 10) << "\n";
 
