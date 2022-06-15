@@ -1,8 +1,8 @@
 /**
  * @file Calendar.cpp
  * @author Steven Aquino
- * @brief You are given the following information, but you may prefer to do some
- * research for yourself.
+ * @brief You are given the following information, but you may prefer to do
+ * some research for yourself.
  *
  * 1 Jan 1900 was a Monday.
  * Thirty days has September, April, June and November.
@@ -23,36 +23,64 @@
  */
 #include <iostream>
 #include <string>
+#include <vector>
 
 class Calendar {
-  private:
-    int date;        // The number of the date
-    int month;       // Numerical value of the month
-    int year;        // The year
-    std::string day; // The label for the date
+private:
+  std::string days[7] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
+                         "Thursday", "Friday", "Saturday"};
+  int date;
+  int month;
+  int year;
+  std::string day;
 
-  public:
-    Calendar(int date_, int month_, int year_, std::string day_);
-    ~Calendar();
-    void nextDay(); // TODO Implement function
+public:
+  Calendar(int date_, int month_, int year_, std::string day_);
+  ~Calendar();
+
+  int date();
+  int month();
+  int year();
+  std::string day();
+
+  void next_day();
 };
 
 int main() {
-    Calendar euler(1, 1, 1900, "Monday");
+  Calendar euler(1, 1, 1900, "Monday");
 
-    // Go through the dates until 31 Dec 2000 counting Sundays
-    int sundays = 0;
-    // Print the number of Sundays
-    std::cout << sundays << "\n";
+  int current_day = euler.date();
+  int current_month = euler.month();
+  int current_year = euler.year();
 
-    return 0;
+  int first_sundays = 0;
+  while (current_day != 1 && current_month != 1 && current_year != 2001) {
+    if (current_day == 1 && euler.day() == "Sunday") {
+      first_sundays++;
+    }
+
+    euler.next_day();
+    current_day = euler.date();
+    current_month = euler.month();
+    current_year = euler.year();
+  }
+
+  std::cout << " The amount of Sundays on the first are " << first_sundays
+            << "\n";
+
+  return 0;
 }
 
 Calendar::Calendar(int date_, int month_, int year_, std::string day_) {
-    date = date_;
-    month = month_;
-    year = year_;
-    day = day_;
+  date = date_;
+  month = month_;
+  year = year_;
+  day = day_;
 }
 
 Calendar::~Calendar() {}
+
+int date() { return date; }
+int month() { return month; }
+int year() { return year; }
+std::string day() { return day; }
