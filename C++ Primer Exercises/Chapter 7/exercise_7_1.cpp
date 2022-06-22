@@ -16,23 +16,25 @@
  */
 #include <iostream>
 
-double harmonic_mean(double n1, double n2) {
-  return (2.0 * n1 * n2) / (n1 + n2);
+double harmonic_mean(double n1, double n2)
+{
+    return (2.0 * n1 * n2) / (n1 + n2);
 }
 
-int main() {
-  std::cout << "Enter pair of numbers to find harmonic mean or 0 to quit\n";
-  int num1;
-  int num2;
-  std::cin >> num1 >> num2;
-
-  while (num1 != 0 && num2 != 0) {
-    std::cout << "The harmonic mean for numbers entered are "
-              << harmonic_mean(num1, num2) << "\n";
+int main()
+{
+    std::cout << "Enter pair of numbers to find harmonic mean or 0 to quit\n";
+    int num1;
+    int num2;
     std::cin >> num1 >> num2;
-  }
 
-  std::cout << "Bye!\n";
+    while (num1 != 0 && num2 != 0) {
+        std::cout << "The harmonic mean for numbers entered are "
+                  << harmonic_mean(num1, num2) << "\n";
+        std::cin >> num1 >> num2;
+    }
 
-  return 0;
+    std::cout << "Bye!\n";
+
+    return 0;
 }
