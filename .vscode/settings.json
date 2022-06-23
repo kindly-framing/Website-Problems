@@ -48,5 +48,25 @@
     "xutility": "cpp",
     "fstream": "cpp"
   },
-  "C_Cpp.errorSquiggles": "Disabled"
+  "C_Cpp.errorSquiggles": "Disabled",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#ae5e9e",
+    "activityBar.activeBorder": "#b2bf80",
+    "activityBar.background": "#ae5e9e",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#b2bf80",
+    "activityBarBadge.foreground": "#15202b",
+    "sash.hoverBorder": "#ae5e9e",
+    "statusBar.background": "#904982",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#ae5e9e",
+    "statusBarItem.remoteBackground": "#904982",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#904982",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#90498299",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#904982"
 }
