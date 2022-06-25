@@ -23,6 +23,7 @@ int main()
     int amount_of_blocks;
     std::cin >> amount_of_blocks;
     BlockWorld online_judge(amount_of_blocks);
+    std::cin.ignore(); // Prevents getline() to get leftover character
 
     std::string input;
     while (std::getline(std::cin, input)) {
@@ -32,9 +33,8 @@ int main()
 
         try {
             online_judge.execute(input);
-        }
-        catch (const std::invalid_argument &e) {
-            std::cerr << e.what() << '\n';
+        } catch (const std::invalid_argument &e) {
+            std::cerr << e.what() << "\n";
         }
     }
 
@@ -45,58 +45,55 @@ int main()
 
 BlockWorld::BlockWorld(int blocks)
 {
+
+    std::vector<std::vector<int>> vec(blocks, std::vector<int>(1));
+    m_map = vec;
+
     // Initializes the map with the blocks
-    for (int i = 1; i <= blocks; i++) {
-        map.push_back(i);
+    for (int i = 0; i < blocks; i++) {
+        m_map[i][0] = i;
     }
+
+    m_total_blocks = blocks;
 }
 
 BlockWorld::~BlockWorld() {}
 
-/**
- * @brief Puts block a onto block b after returning any blocks that are stacked
- * on top of blocks a and b to their initial positions.
- *
- * @param a Block to be moved.
- * @param b Block for a to be placed on top of.
- */
 void BlockWorld::move_onto(int a, int b)
 {
-    std::pair<int, int> a_location = find_block(a);
-    map[a_location.first].erase(a_location.second);
+    int row; // Row of blocks
+    int col; // Column of blocks
 
-    // Find block b and place block a next to block b
+    // Moving block a by erasing from original location
+    std::pair<int, int> a_location = find_block(a);
+    row = a_location.first;
+    col = a_location.second;
+    m_map[row].erase(std::begin(m_map[row]) + col);
+
+    // Placing block a next to block b by inserting after
     std::pair<int, int> b_location = find_block(b);
-    map[b_location.first].insert(b_location.second + 1, a);
+    row = b_location.first;
+    col = b_location.second;
+    m_map[row].insert(std::begin(m_map[row]) + col + 1, a);
 }
 
-/**
- * @brief Puts block a onto the top of the stack containing block b, after
- * returning any blocks that are stacked on top of block a to their initial
- * positions.
- *
- * @param a Block to be moved
- * @param b Block for a to be placed on the stack of.
- */
 void BlockWorld::move_over(int a, int b)
 {
+    int row;
+    int col;
+
     std::pair<int, int> a_location = find_block(a);
-    map[a_location.first].erase(a_location.second);
+    row = a_location.first;
+    col = a_location.second;
+    m_map[row].erase(std::begin(m_map[row]) + col);
 
     // Find block b and place block a on top of the stack on block b
     std::pair<int, int> b_location = find_block(b);
-    map[b_location.first].push_back(a);
+    row = b_location.first;
+    col = b_location.second;
+    m_map[b_location.first].push_back(a);
 }
 
-/**
- * @brief Moves the pile of blocks consisting of block a, and any blocks
- * that are stacked above block a, onto block b. All blocks on top of block b
- * are moved to their initial positions prior to the pile taking place. The
- * blocks stacked above block a retain their order when moved.
- *
- * @param a Block to be moved
- * @param b Block for a to be placed onto
- */
 void BlockWorld::pile_onto(int a, int b)
 {
     std::vector<int> pile = grab_pile(a);
@@ -105,17 +102,10 @@ void BlockWorld::pile_onto(int a, int b)
     std::pair<int, int> b_location = find_block(b);
     int row = b_location.first;
     int col = b_location.second;
-    map[row].insert(col, std::begin(pile), std::end(pile));
+    m_map[row].insert(std::begin(m_map[row]) + col, std::begin(pile),
+                      std::end(pile));
 }
 
-/**
- * @brief Puts the pile of blocks consisting of block a, and any blocks that
- * are stacked above block a, onto the top of the stack containing block b. The
- * blocks stacked above block a retain their original order when moved.
- *
- * @param a Block to be moved
- * @param b Block for a to be placed on the stack of.
- */
 void BlockWorld::pile_over(int a, int b)
 {
     std::vector<int> pile = grab_pile(a);
@@ -124,75 +114,77 @@ void BlockWorld::pile_over(int a, int b)
     std::pair<int, int> b_location = find_block(b);
     int row = b_location.first;
     int col = b_location.second;
-    map[row].insert(std::end(map[row]), std::begin(pile), std::end(pile));
+    m_map[row].insert(std::end(m_map[row]), std::begin(pile), std::end(pile));
 }
 
-/**
- * @brief Validates the input and executes the corresponding command. Throws
- * invalid_argument if the command can't be executed.
- *
- * @param cmd Command to be executed
- */
 void BlockWorld::execute(std::string cmd)
 {
-    if (is_command(cmd)) {
-    }
-    else {
-        throw std::invalid_argument;
+    if (valid_command(cmd)) {
+        std::string word1 = m_command[0];
+        std::string word2 = m_command[2];
+        int block_a = stoi(m_command[1]);
+        int block_b = stoi(m_command[3]);
+
+        if (word1 == "move" && word2 == "onto") {
+            move_onto(block_a, block_b);
+        } else if (word1 == "move" && word2 == "over") {
+            move_over(block_a, block_b);
+        } else if (word1 == "pile" && word2 == "onto") {
+            pile_onto(block_a, block_b);
+        } else {
+            pile_over(block_a, block_b);
+        }
+        m_command.clear();
+    } else {
+        m_command.clear();
+        throw std::invalid_argument("Can't execute");
     }
 }
 
-bool BlockWorld::is_command(std::string cmd) {}
+bool BlockWorld::valid_command(std::string cmd)
+{
+    // Seperating command word by word to test
+    std::istringstream iss(cmd);
+    std::string word;
+    while (iss >> word) {
+        m_command.push_back(word);
+        // Valid command is only 4 parts
+        if (m_command.size() > 4) {
+            m_command.clear();
+            return false;
+        }
+    }
 
-/**
- * @brief Outputs the map to the console in the indented format.
- *
- * Location: Blocks (spaced)
- *
- */
+    // Second and final part should be block numbers
+    int block_a;
+    int block_b;
+    try {
+        block_a = stoi(m_command[1]);
+        block_b = stoi(m_command[3]);
+    } catch (const std::invalid_argument &e) {
+        m_command.clear();
+        return false;
+    }
+
+    bool valid_nums = ((block_a >= 0 && block_a < m_total_blocks) &&
+                       (block_b >= 0 && block_b < m_total_blocks));
+    bool valid_words = ((m_command[0] == "move" || m_command[0] == "pile") &&
+                        (m_command[2] == "onto" || m_command[2] == "over"));
+    return valid_nums && valid_words;
+}
+
 void BlockWorld::display()
 {
-    for (int i = 0; i < map.size(); i++) {
+    for (int i = 0; i < m_map.size(); i++) {
         std::cout << i << ": ";
-        for (int j = 0; j < map[i].size(); j++) {
-            std::cout << map[i][j] << " ";
+        for (int j = 0; j < m_map[i].size(); j++) {
+            std::cout << m_map[i][j] << " ";
         }
         std::cout << "\n";
     }
 }
 
-/**
- * @brief Finds the location for the block and return the coordinates for the
- * location.
- *
- * @param a The block to be found
- * @return std::pair<int, int> Coordinates for block a.
- */
-std::pair<int, int> find_block(int a)
-{
-    std::pair<int, int> location;
-
-    for (int i = 0; i < map.size(); i++) {
-        for (int j = 0; j < map[i].size(); j++) {
-            if (map[i][j] == a) {
-                location = std::make_pair(i, j);
-                goto found;
-            }
-        }
-    }
-
-found:
-    return location;
-}
-
-/**
- * @brief Grabs pile on top of block a, including a. If there is no pile on top
- * of block a, returns just block a. Deletes the pile from original location.
- *
- * @param a Block a
- * @return std::vector<int> A pile of blocks.
- */
-std::vector<int> grab_pile(int a)
+std::vector<int> BlockWorld::grab_pile(int a)
 {
     std::vector<int> pile;
 
@@ -201,10 +193,27 @@ std::vector<int> grab_pile(int a)
     int col = location.second;
 
     // Not using for loop since erase() shifts the position back to column
-    while (col + 1 != map[row].size()) {
-        pile.push_back(map[row][col]);
-        map[row].erase(col);
+    while (col != m_map[row].size()) {
+        pile.push_back(m_map[row][col]);
+        m_map[row].erase(std::begin(m_map[row]) + col);
     }
 
     return pile;
+}
+
+std::pair<int, int> BlockWorld::find_block(int a)
+{
+    std::pair<int, int> location;
+
+    for (int i = 0; i < m_map.size(); i++) {
+        for (int j = 0; j < m_map[i].size(); j++) {
+            if (m_map[i][j] == a) {
+                location = std::make_pair(i, j);
+                goto found;
+            }
+        }
+    }
+
+found:
+    return location;
 }
