@@ -10,41 +10,43 @@
  */
 #include <iostream>
 
-int cycle_length(int num);
+/**
+ * @brief Calculates the cycle length of a given number. The algorithm for cycle
+ * length takes the given number and applies this formula until n = 1. If n is
+ * odd, n = 3n + 1. Otherwise, n = n/2.
+ *
+ * @return int The cycle length for the number.
+ */
+int cycle_length(int);
 
 int main()
 {
-    std::cout << "Enter two numbers (single line): \n";
-    int num1, num2;
+    int n1, n2;
 
-    while (std::cin >> num1 >> num2)
-    {
+    while (scanf("%d%d", &n1, &n2) == 2) {
         int max_length = 0;
 
-        for (int i = num1; i <= num2; i++)
-        {
+        // Finding the max cycle length for numbers given
+        int min = std::min(n1, n2);
+        int max = std::max(n1, n2);
+        for (int i = min; i <= max; i++) {
             max_length = std::max(max_length, cycle_length(i));
         }
 
-        std::cout << num1 << " " << num2 << " " << max_length << "\n";
+        printf("%d %d %d\n", n1, n2, max_length);
     }
 
     return 0;
 }
 
-int cycle_length(int num)
+int cycle_length(int n)
 {
     int len = 1;
-    int n = num;
 
-    while (n != 1)
-    {
-        if ((n % 2) != 0)
-        {
+    while (n != 1) {
+        if ((n % 2) != 0) {
             n = 3 * n + 1;
-        }
-        else
-        {
+        } else {
             n /= 2;
         }
 
