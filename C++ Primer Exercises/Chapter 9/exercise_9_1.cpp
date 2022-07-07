@@ -23,8 +23,6 @@
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-
     const int len = 3;
 
     // Using interactive version
